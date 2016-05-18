@@ -11,5 +11,5 @@ buildscript {
 apply plugin: 'com.mparticle.kit'
 
 dependencies {
-    compile 'com.adjust.sdk:adjust-android:4.2.3'
+    compile 'com.adjust.sdk:adjust-android:4.7.0'
 }
