@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p/>
- * Embedded implementation of the Adjust SDK 4.0.6
+ * Embedded implementation of the Adjust SDK
  * <p/>
  */
 public class AdjustKit extends KitIntegration implements KitIntegration.ActivityListener{
