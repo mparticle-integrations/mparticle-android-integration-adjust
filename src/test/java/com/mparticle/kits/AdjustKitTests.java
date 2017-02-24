@@ -3,17 +3,26 @@ package com.mparticle.kits;
 
 import android.content.Context;
 
+import com.adjust.sdk.Adjust;
+import com.adjust.sdk.AdjustAttribution;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class AdjustKitTests {
+
+    public AdjustKitTests() throws JSONException {
+    }
 
     private KitIntegration getKit() {
         return new AdjustKit();
@@ -54,5 +63,26 @@ public class AdjustKitTests {
             }
         }
         fail(className + " not found as a known integration.");
+    }
+
+    @Test
+    public void testAttributionToJSON() throws JSONException {
+        JSONObject originalAttributionJSON = getAttributionJSON();
+        AdjustAttribution attribution = AdjustAttribution.fromJson(originalAttributionJSON, originalAttributionJSON.getString("adid"));
+        JSONObject attributionJSON = AdjustKit.toJSON(attribution);
+        assertEquals(originalAttributionJSON.toString(), attributionJSON.toString());
+    }
+
+    private JSONObject getAttributionJSON() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.putOpt("tracker_token", "a1");
+        jsonObject.putOpt("tracker_name", "b2");
+        jsonObject.putOpt("network", "c3");
+        jsonObject.putOpt("campaign", "d4");
+        jsonObject.putOpt("adgroup", "e5");
+        jsonObject.putOpt("creative", "f6");
+        jsonObject.putOpt("click_label", "g7");
+        jsonObject.putOpt("adid", "h8");
+        return jsonObject;
     }
 }
