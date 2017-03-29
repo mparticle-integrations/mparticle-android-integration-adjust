@@ -1,6 +1,7 @@
 package com.mparticle.kits;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,14 +22,13 @@ import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p/>
  * Embedded implementation of the Adjust SDK
  * <p/>
  */
-public class AdjustKit extends KitIntegration implements KitIntegration.ActivityListener, OnAttributionChangedListener {
+public class AdjustKit extends KitIntegration implements OnAttributionChangedListener, Application.ActivityLifecycleCallbacks {
 
     private static final String APP_TOKEN = "appToken";
 
@@ -57,57 +57,13 @@ public class AdjustKit extends KitIntegration implements KitIntegration.Activity
         }
         config.setEventBufferingEnabled(false);
         Adjust.onCreate(config);
+        ((Application)context.getApplicationContext()).registerActivityLifecycleCallbacks(this);
         return null;
     }
 
     @Override
     public void setInstallReferrer(Intent intent) {
         new AdjustReferrerReceiver().onReceive(getContext(), intent);
-    }
-
-    @Override
-    public List<ReportingMessage> onActivityCreated(Activity activity, Bundle bundle) {
-        return null;
-    }
-
-    @Override
-    public List<ReportingMessage> onActivityStarted(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public List<ReportingMessage> onActivityResumed(Activity activity) {
-        Adjust.onResume();
-        List<ReportingMessage> messageList = new LinkedList<ReportingMessage>();
-        messageList.add(
-            new ReportingMessage(this, ReportingMessage.MessageType.APP_STATE_TRANSITION, System.currentTimeMillis(), null)
-        );
-        return messageList;
-    }
-
-    @Override
-    public List<ReportingMessage> onActivityPaused(Activity activity) {
-        Adjust.onPause();
-        List<ReportingMessage> messageList = new LinkedList<ReportingMessage>();
-        messageList.add(
-                new ReportingMessage(this, ReportingMessage.MessageType.APP_STATE_TRANSITION, System.currentTimeMillis(), null)
-        );
-        return messageList;
-    }
-
-    @Override
-    public List<ReportingMessage> onActivityStopped(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public List<ReportingMessage> onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-        return null;
-    }
-
-    @Override
-    public List<ReportingMessage> onActivityDestroyed(Activity activity) {
-        return null;
     }
 
     @Override
@@ -158,5 +114,40 @@ public class AdjustKit extends KitIntegration implements KitIntegration.Activity
                 .putOpt("creative", attribution.creative)
                 .putOpt("click_label", attribution.clickLabel)
                 .putOpt("adid", attribution.adid);
+    }
+
+    @Override
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onActivityStarted(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) {
+        Adjust.onResume();
+    }
+
+    @Override
+    public void onActivityPaused(Activity activity) {
+        Adjust.onPause();
+    }
+
+    @Override
+    public void onActivityStopped(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+
     }
 }

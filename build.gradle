@@ -10,6 +10,12 @@ buildscript {
 
 apply plugin: 'com.mparticle.kit'
 
+android {
+    defaultConfig {
+        minSdkVersion 14
+    }
+}
+
 dependencies {
     testCompile  files('libs/java-json.jar')
     compile 'com.adjust.sdk:adjust-android:4.11.0'
