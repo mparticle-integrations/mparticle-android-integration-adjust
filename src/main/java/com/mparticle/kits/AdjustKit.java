@@ -12,8 +12,8 @@ import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustReferrerReceiver;
 import com.adjust.sdk.LogLevel;
 import com.adjust.sdk.OnAttributionChangedListener;
-import com.mparticle.DeepLinkError;
-import com.mparticle.DeepLinkResult;
+import com.mparticle.AttributionError;
+import com.mparticle.AttributionResult;
 import com.mparticle.MParticle;
 
 import org.json.JSONException;
@@ -78,14 +78,9 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
     }
 
     @Override
-    public void checkForDeepLink() {
-        onAttributionChanged(Adjust.getAttribution());
-    }
-
-    @Override
     public void onAttributionChanged(AdjustAttribution attribution) {
-        // if Attribution has not been fetch yet, the value passed in checkForDeepLink(), from
-        // Adjust.getAttribution() will be null, in this case we should do nothing and wait for
+        // if Attribution has not been fetch yet the argument
+        // will be null, in this case we should do nothing and wait for
         // the asynchronous callback to return
         if (attribution == null) return;
 
@@ -93,12 +88,12 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
         try {
             jsonObject = toJSON(attribution);
         } catch (JSONException e) {
-            DeepLinkError error = new DeepLinkError()
+            AttributionError error = new AttributionError()
                     .setMessage(e.getMessage())
                     .setServiceProviderId(MParticle.ServiceProviders.ADJUST);
             getKitManager().onError(error);
         }
-        DeepLinkResult deepLinkResult = new DeepLinkResult()
+        AttributionResult deepLinkResult = new AttributionResult()
                 .setParameters(jsonObject)
                 .setServiceProviderId(MParticle.ServiceProviders.ADJUST);
         getKitManager().onResult(deepLinkResult);
