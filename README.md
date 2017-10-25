@@ -8,7 +8,7 @@ This repository contains the [Adjust](https://www.adjust.com/) integration for t
 
     ```groovy
     dependencies {
-        compile 'com.mparticle:android-adjust-kit:4+'
+        compile 'com.mparticle:android-adjust-kit:5+'
     }
     ```
 2. Follow the mParticle Android SDK [quick-start](https://github.com/mParticle/mparticle-android-sdk), then rebuild and launch your app, and verify that you see `"Adjust detected"` in the output of `adb logcat`.
