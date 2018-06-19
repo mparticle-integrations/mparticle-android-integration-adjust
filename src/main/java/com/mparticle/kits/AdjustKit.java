@@ -15,6 +15,7 @@ import com.adjust.sdk.OnAttributionChangedListener;
 import com.mparticle.AttributionError;
 import com.mparticle.AttributionResult;
 import com.mparticle.MParticle;
+import com.mparticle.kits_core.ReportingMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +29,7 @@ import java.util.Map;
  * Embedded implementation of the Adjust SDK
  * <p/>
  */
-public class AdjustKit extends KitIntegration implements OnAttributionChangedListener, Application.ActivityLifecycleCallbacks {
+public class AdjustKit extends AbstractKitIntegration implements OnAttributionChangedListener, Application.ActivityLifecycleCallbacks {
 
     private static final String APP_TOKEN = "appToken";
 
@@ -43,7 +44,7 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
     }
 
     @Override
-    protected List<ReportingMessage> onKitCreate(Map<String, String> settings, Context context) {
+    public List<ReportingMessage> onKitCreate(Map<String, String> settings, Context context) {
         boolean production = MParticle.Environment.Production.equals(MParticle.getInstance().getEnvironment());
 
         AdjustConfig config = new AdjustConfig(getContext(),
@@ -71,7 +72,7 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
         Adjust.setEnabled(!optOutStatus);
         List<ReportingMessage> messageList = new LinkedList<ReportingMessage>();
         messageList.add(
-                new ReportingMessage(this, ReportingMessage.MessageType.OPT_OUT, System.currentTimeMillis(), null)
+                new ReportingMessageImpl(this, ReportingMessageImpl.MessageType.OPT_OUT, System.currentTimeMillis(), null)
                 .setOptOut(optOutStatus)
         );
         return messageList;
