@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAttribution;
-import com.mparticle.kits_core.KitIntegration;
+import com.mparticle.kits.core.KitIntegration;
 
 import org.json.JSONException;
 import org.json.JSONObject;

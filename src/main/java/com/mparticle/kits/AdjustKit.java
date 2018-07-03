@@ -15,7 +15,7 @@ import com.adjust.sdk.OnAttributionChangedListener;
 import com.mparticle.AttributionError;
 import com.mparticle.AttributionResult;
 import com.mparticle.MParticle;
-import com.mparticle.kits_core.ReportingMessage;
+import com.mparticle.kits.core.ReportingMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
