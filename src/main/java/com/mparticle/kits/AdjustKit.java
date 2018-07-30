@@ -92,12 +92,12 @@ public class AdjustKit extends AbstractKitIntegration implements OnAttributionCh
             AttributionError error = new AttributionError()
                     .setMessage(e.getMessage())
                     .setServiceProviderId(MParticle.ServiceProviders.ADJUST);
-            getKitManager().onError(error);
+            getAttributionListener().onError(error);
         }
         AttributionResult deepLinkResult = new AttributionResult()
                 .setParameters(jsonObject)
                 .setServiceProviderId(MParticle.ServiceProviders.ADJUST);
-        getKitManager().onResult(deepLinkResult);
+        getAttributionListener().onResult(deepLinkResult);
     }
 
     public static JSONObject toJSON(AdjustAttribution attribution) throws JSONException {
