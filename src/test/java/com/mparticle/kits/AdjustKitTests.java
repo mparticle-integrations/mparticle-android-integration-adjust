@@ -68,7 +68,7 @@ public class AdjustKitTests {
     @Test
     public void testAttributionToJSON() throws JSONException {
         JSONObject originalAttributionJSON = getAttributionJSON();
-        AdjustAttribution attribution = AdjustAttribution.fromJson(originalAttributionJSON, originalAttributionJSON.getString("adid"));
+        AdjustAttribution attribution = AdjustAttribution.fromJson(originalAttributionJSON, originalAttributionJSON.getString("adid"), "android");
         JSONObject attributionJSON = AdjustKit.toJSON(attribution);
         assertEquals(originalAttributionJSON.toString(), attributionJSON.toString());
     }
