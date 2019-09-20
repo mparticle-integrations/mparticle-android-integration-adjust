@@ -1,4 +1,8 @@
 buildscript {
+    if (!project.hasProperty('version') || project.version == 'unspecified') {
+        project.version = '+'
+    }
+
     repositories {
         google()
         mavenLocal()
