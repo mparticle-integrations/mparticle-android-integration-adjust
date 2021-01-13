@@ -12,6 +12,7 @@ import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustReferrerReceiver;
 import com.adjust.sdk.LogLevel;
 import com.adjust.sdk.OnAttributionChangedListener;
+import com.adjust.sdk.OnDeeplinkResponseListener;
 import com.mparticle.AttributionError;
 import com.mparticle.AttributionResult;
 import com.mparticle.MParticle;
@@ -31,6 +32,8 @@ import java.util.Map;
 public class AdjustKit extends KitIntegration implements OnAttributionChangedListener, Application.ActivityLifecycleCallbacks {
 
     private static final String APP_TOKEN = "appToken";
+
+    public static OnDeeplinkResponseListener AdjustOnDeeplinkResponseListener;
 
     @Override
     public Object getInstance() {
@@ -52,9 +55,16 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
 
         config.setOnAttributionChangedListener(this);
 
+        if (AdjustOnDeeplinkResponseListener != null) {
+            OnDeeplinkResponseListener listener = AdjustOnDeeplinkResponseListener;
+            config.setOnDeeplinkResponseListener(listener);
+            AdjustOnDeeplinkResponseListener = null;
+        }
+
         if (!production){
             config.setLogLevel(LogLevel.VERBOSE);
         }
+
         config.setEventBufferingEnabled(false);
         Adjust.onCreate(config);
         ((Application)context.getApplicationContext()).registerActivityLifecycleCallbacks(this);
