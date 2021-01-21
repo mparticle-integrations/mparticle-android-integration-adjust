@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.adjust.sdk.Adjust;
@@ -29,11 +30,9 @@ import java.util.Map;
  * Embedded implementation of the Adjust SDK
  * <p/>
  */
-public class AdjustKit extends KitIntegration implements OnAttributionChangedListener, Application.ActivityLifecycleCallbacks {
+public class AdjustKit extends KitIntegration implements OnAttributionChangedListener, Application.ActivityLifecycleCallbacks, OnDeeplinkResponseListener {
 
     private static final String APP_TOKEN = "appToken";
-
-    public static OnDeeplinkResponseListener AdjustOnDeeplinkResponseListener;
 
     @Override
     public Object getInstance() {
@@ -54,12 +53,7 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
                 production ? AdjustConfig.ENVIRONMENT_PRODUCTION : AdjustConfig.ENVIRONMENT_SANDBOX);
 
         config.setOnAttributionChangedListener(this);
-
-        if (AdjustOnDeeplinkResponseListener != null) {
-            OnDeeplinkResponseListener listener = AdjustOnDeeplinkResponseListener;
-            config.setOnDeeplinkResponseListener(listener);
-            AdjustOnDeeplinkResponseListener = null;
-        }
+        config.setOnDeeplinkResponseListener(this);
 
         if (!production){
             config.setLogLevel(LogLevel.VERBOSE);
@@ -154,5 +148,14 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
     @Override
     public void onActivityDestroyed(Activity activity) {
 
+    }
+
+    @Override
+    public boolean launchReceivedDeeplink(Uri deeplink) {
+        AttributionResult deepLinkResult = new AttributionResult()
+                .setLink(deeplink.toString())
+                .setServiceProviderId(MParticle.ServiceProviders.ADJUST);
+        getKitManager().onResult(deepLinkResult);
+        return true;
     }
 }
