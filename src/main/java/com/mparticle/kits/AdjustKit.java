@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.adjust.sdk.Adjust;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p/>
  * Embedded implementation of the Adjust SDK
  * <p/>
  */
@@ -33,7 +33,7 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
 
     private static final String APP_TOKEN = "appToken";
 
-    public static OnDeeplinkResponseListener AdjustOnDeeplinkResponseListener;
+    public static OnDeeplinkEventListener deeplinkResponseListenerProxy;
 
     @Override
     public Object getInstance() {
@@ -55,19 +55,24 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
 
         config.setOnAttributionChangedListener(this);
 
-        if (AdjustOnDeeplinkResponseListener != null) {
-            OnDeeplinkResponseListener listener = AdjustOnDeeplinkResponseListener;
-            config.setOnDeeplinkResponseListener(listener);
-            AdjustOnDeeplinkResponseListener = null;
+        if (deeplinkResponseListenerProxy != null) {
+            final OnDeeplinkEventListener listener = deeplinkResponseListenerProxy;
+            config.setOnDeeplinkResponseListener(new OnDeeplinkResponseListener() {
+                @Override
+                public boolean launchReceivedDeeplink(Uri deeplink) {
+                    return listener.launchReceivedDeeplink(deeplink);
+                }
+            });
+            deeplinkResponseListenerProxy = null;
         }
 
-        if (!production){
+        if (!production) {
             config.setLogLevel(LogLevel.VERBOSE);
         }
 
         config.setEventBufferingEnabled(false);
         Adjust.onCreate(config);
-        ((Application)context.getApplicationContext()).registerActivityLifecycleCallbacks(this);
+        ((Application) context.getApplicationContext()).registerActivityLifecycleCallbacks(this);
         return null;
     }
 
@@ -79,11 +84,11 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
     @Override
     public List<ReportingMessage> setOptOut(boolean optOutStatus) {
         Adjust.setEnabled(!optOutStatus);
-        List<ReportingMessage> messageList = new LinkedList<ReportingMessage>();
+        List<ReportingMessage> messageList = new LinkedList<>();
         messageList.add(
-                new ReportingMessage(this, ReportingMessage.MessageType.OPT_OUT, System.currentTimeMillis(), null)
-                .setOptOut(optOutStatus)
-        );
+                new ReportingMessage(
+                        this, ReportingMessage.MessageType.OPT_OUT, System.currentTimeMillis(), null)
+                        .setOptOut(optOutStatus));
         return messageList;
     }
 
@@ -98,14 +103,16 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
         try {
             jsonObject = toJSON(attribution);
         } catch (JSONException e) {
-            AttributionError error = new AttributionError()
-                    .setMessage(e.getMessage())
-                    .setServiceProviderId(MParticle.ServiceProviders.ADJUST);
+            AttributionError error =
+                    new AttributionError()
+                            .setMessage(e.getMessage())
+                            .setServiceProviderId(MParticle.ServiceProviders.ADJUST);
             getKitManager().onError(error);
         }
-        AttributionResult deepLinkResult = new AttributionResult()
-                .setParameters(jsonObject)
-                .setServiceProviderId(MParticle.ServiceProviders.ADJUST);
+        AttributionResult deepLinkResult =
+                new AttributionResult()
+                        .setParameters(jsonObject)
+                        .setServiceProviderId(MParticle.ServiceProviders.ADJUST);
         getKitManager().onResult(deepLinkResult);
     }
 
@@ -122,14 +129,10 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
     }
 
     @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
-    }
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
 
     @Override
-    public void onActivityStarted(Activity activity) {
-
-    }
+    public void onActivityStarted(Activity activity) {}
 
     @Override
     public void onActivityResumed(Activity activity) {
@@ -142,17 +145,11 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
     }
 
     @Override
-    public void onActivityStopped(Activity activity) {
-
-    }
+    public void onActivityStopped(Activity activity) {}
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-    }
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
 
     @Override
-    public void onActivityDestroyed(Activity activity) {
-
-    }
+    public void onActivityDestroyed(Activity activity) {}
 }
