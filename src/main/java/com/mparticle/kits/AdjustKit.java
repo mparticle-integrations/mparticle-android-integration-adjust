@@ -33,6 +33,7 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
 
     private static final String APP_TOKEN = "appToken";
 
+
     public static OnDeeplinkEventListener deeplinkResponseListenerProxy;
 
     @Override
