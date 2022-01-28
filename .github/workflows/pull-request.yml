@@ -3,4 +3,4 @@ on: pull_request_target
 jobs:
   pr-check:
     name: "Pull Request Check"
-    uses: mParticle/mparticle-workflows/.github/workflows/android-kit-pull-request.yml@stable
+    uses: mParticle/mparticle-workflows/.github/workflows/android-kit-pull-request.yml@c319c8d9759d6918a36133499d5250df02f9e329
