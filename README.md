@@ -16,7 +16,7 @@ This repository contains the [Adjust](https://www.adjust.com/) integration for t
 
 ### Documentation
 
-[Adjust integration](http://docs.mparticle.com/?java#adjust)
+[Adjust integration](https://docs.mparticle.com/integrations/adjust/event/)
 
 ### License
 
