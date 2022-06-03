@@ -32,6 +32,7 @@ import java.util.Map;
 public class AdjustKit extends KitIntegration implements OnAttributionChangedListener, Application.ActivityLifecycleCallbacks {
 
     private static final String APP_TOKEN = "appToken";
+    private static final String ADJUST_ID_KEY = "adid";
 
     public static OnDeeplinkEventListener deeplinkResponseListenerProxy;
 
@@ -72,6 +73,9 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
 
         config.setEventBufferingEnabled(false);
         Adjust.onCreate(config);
+
+        setAdidIntegrationAttribute();
+
         ((Application) context.getApplicationContext()).registerActivityLifecycleCallbacks(this);
         return null;
     }
@@ -152,4 +156,13 @@ public class AdjustKit extends KitIntegration implements OnAttributionChangedLis
 
     @Override
     public void onActivityDestroyed(Activity activity) {}
+
+    private void setAdidIntegrationAttribute() {
+        Map<String, String> integrationAttributes = getIntegrationAttributes();
+        String adid = Adjust.getAdid();
+        if (adid != null) {
+            integrationAttributes.put(ADJUST_ID_KEY, adid);
+            setIntegrationAttributes(integrationAttributes);
+        }
+    }
 }
