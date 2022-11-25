@@ -28,5 +28,5 @@ android {
 
 dependencies {
     testImplementation  files('libs/java-json.jar')
-    api 'com.adjust.sdk:adjust-android:4.32.0'
+    api 'com.adjust.sdk:adjust-android:4.33.1'
 }
