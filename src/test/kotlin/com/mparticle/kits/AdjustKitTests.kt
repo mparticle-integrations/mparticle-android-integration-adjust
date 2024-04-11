@@ -33,6 +33,8 @@ class AdjustKitTests {
             val kit = kit
             val settings = HashMap<String, String>()
             settings["fake setting"] = "fake"
+            settings[AdjustKit.APP_TOKEN] = "test"
+            settings[AdjustKit.FB_APP_ID_KEY] = "test"
             kit.onKitCreate(settings, Mockito.mock(Context::class.java))
         } catch (ex: Exception) {
             e = ex
