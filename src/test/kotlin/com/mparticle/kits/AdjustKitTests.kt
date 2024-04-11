@@ -33,8 +33,14 @@ class AdjustKitTests {
             val kit = kit
             val settings = HashMap<String, String>()
             settings["fake setting"] = "fake"
-            settings[AdjustKit.APP_TOKEN] = "test"
-            settings[AdjustKit.FB_APP_ID_KEY] = "test"
+            val appToken = AdjustKit::class.java.getDeclaredField("APP_TOKEN")
+            appToken.isAccessible = true
+            val token = appToken.get(AdjustKit.Companion) as String
+            settings[token] = "test1"
+            val fbAppId = AdjustKit::class.java.getDeclaredField("FB_APP_ID_KEY")
+            fbAppId.isAccessible = true
+            val fbId = fbAppId.get(AdjustKit.Companion) as String
+            settings[fbId] = "test2"
             kit.onKitCreate(settings, Mockito.mock(Context::class.java))
         } catch (ex: Exception) {
             e = ex

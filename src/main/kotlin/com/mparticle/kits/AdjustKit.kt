@@ -119,9 +119,9 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
     }
 
     companion object {
-        const val APP_TOKEN = "appToken"
+        private const val APP_TOKEN = "appToken"
         private const val ADJUST_ID_KEY = "adid"
-        const val FB_APP_ID_KEY = "fbAppId"
+        private const val FB_APP_ID_KEY = "fbAppId"
         private const val KIT_NAME = "Adjust"
 
         var deeplinkResponseListenerProxy: OnDeeplinkEventListener? = null
