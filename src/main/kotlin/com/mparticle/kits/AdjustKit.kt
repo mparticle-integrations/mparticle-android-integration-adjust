@@ -51,6 +51,10 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
             config.setLogLevel(LogLevel.VERBOSE)
         }
         config.setEventBufferingEnabled(false)
+        val fbAppId = getSettings()[FB_APP_ID_KEY]
+        if (fbAppId != null) {
+            config.setFbAppId(fbAppId);
+        }
         Adjust.onCreate(config)
         setAdidIntegrationAttribute()
         (context.applicationContext as Application).registerActivityLifecycleCallbacks(this)
@@ -117,6 +121,7 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
     companion object {
         private const val APP_TOKEN = "appToken"
         private const val ADJUST_ID_KEY = "adid"
+        private const val FB_APP_ID_KEY = "fbAppId"
         private const val KIT_NAME = "Adjust"
 
         var deeplinkResponseListenerProxy: OnDeeplinkEventListener? = null
