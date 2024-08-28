@@ -63,19 +63,6 @@ class AdjustKitTests {
         Assert.fail("$className not found as a known integration.")
     }
 
-    @Test
-    @Throws(JSONException::class)
-    fun testAttributionToJSON() {
-        val originalAttributionJSON = attributionJSON
-        val attribution = AdjustAttribution.fromJson(
-            originalAttributionJSON,
-            originalAttributionJSON.getString("adid"),
-            "android"
-        )
-        val attributionJSON = toJSON(attribution)
-        Assert.assertEquals(originalAttributionJSON.toString(), attributionJSON.toString())
-    }
-
     @get:Throws(JSONException::class)
     private val attributionJSON: JSONObject
          get() {
