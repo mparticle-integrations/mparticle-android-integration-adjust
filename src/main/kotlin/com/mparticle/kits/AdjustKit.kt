@@ -39,7 +39,7 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
         if (deeplinkResponseListenerProxy != null) {
             val listener = deeplinkResponseListenerProxy
             if (listener != null) {
-                config.setOnDeeplinkResponseListener { deeplink ->
+                config.setOnDeferredDeeplinkResponseListener { deeplink ->
                     listener.launchReceivedDeeplink(
                         deeplink
                     )
@@ -50,12 +50,11 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
         if (!production) {
             config.setLogLevel(LogLevel.VERBOSE)
         }
-        config.setEventBufferingEnabled(false)
         val fbAppId = getSettings()[FB_APP_ID_KEY]
         if (fbAppId != null) {
             config.setFbAppId(fbAppId);
         }
-        Adjust.onCreate(config)
+        Adjust.initSdk(config)
         setAdidIntegrationAttribute()
         (context.applicationContext as Application).registerActivityLifecycleCallbacks(this)
         return emptyList()
@@ -66,7 +65,7 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
     }
 
     override fun setOptOut(optOutStatus: Boolean): List<ReportingMessage> {
-        Adjust.setEnabled(!optOutStatus)
+        if (!optOutStatus) Adjust.enable() else Adjust.disable()
         val messageList: MutableList<ReportingMessage> = LinkedList()
         messageList.add(
             ReportingMessage(
@@ -99,11 +98,9 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
     override fun onActivityStarted(activity: Activity) {}
     override fun onActivityResumed(activity: Activity) {
-        Adjust.onResume()
     }
 
     override fun onActivityPaused(activity: Activity) {
-        Adjust.onPause()
     }
 
     override fun onActivityStopped(activity: Activity) {}
@@ -111,10 +108,11 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
     override fun onActivityDestroyed(activity: Activity) {}
     private fun setAdidIntegrationAttribute() {
         val integrationAttributes = integrationAttributes
-        val adid = Adjust.getAdid()
-        if (adid != null) {
-            integrationAttributes[ADJUST_ID_KEY] = adid
-            setIntegrationAttributes(integrationAttributes)
+        Adjust.getAdid { adid ->
+            if (adid != null) {
+                integrationAttributes[ADJUST_ID_KEY] = adid
+                setIntegrationAttributes(integrationAttributes)
+            }
         }
     }
 
@@ -137,7 +135,6 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
                 .putOpt("adgroup", attribution.adgroup)
                 .putOpt("creative", attribution.creative)
                 .putOpt("click_label", attribution.clickLabel)
-                .putOpt("adid", attribution.adid)
         }
     }
 }
