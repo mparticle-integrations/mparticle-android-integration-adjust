@@ -6,34 +6,40 @@ import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.adjust.sdk.*
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustAttribution
+import com.adjust.sdk.AdjustConfig
+import com.adjust.sdk.AdjustInstance
+import com.adjust.sdk.AdjustReferrerReceiver
+import com.adjust.sdk.LogLevel
+import com.adjust.sdk.OnAttributionChangedListener
 import com.mparticle.AttributionError
 import com.mparticle.AttributionResult
 import com.mparticle.MParticle
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
+import java.util.LinkedList
 
 /**
  * Embedded implementation of the Adjust SDK
  *
  *
  */
-class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecycleCallbacks {
+class AdjustKit :
+    KitIntegration(),
+    OnAttributionChangedListener,
+    ActivityLifecycleCallbacks {
 
     override fun getInstance(): AdjustInstance = Adjust.getDefaultInstance()
 
     override fun getName(): String = KIT_NAME
 
-    override fun onKitCreate(
-        settings: Map<String, String>,
-        context: Context
-    ): List<ReportingMessage> {
+    override fun onKitCreate(settings: Map<String, String>, context: Context): List<ReportingMessage> {
         val production = MParticle.Environment.Production == MParticle.getInstance()?.environment
         val config = AdjustConfig(
             getContext(),
             getSettings()[APP_TOKEN],
-            if (production) AdjustConfig.ENVIRONMENT_PRODUCTION else AdjustConfig.ENVIRONMENT_SANDBOX
+            if (production) AdjustConfig.ENVIRONMENT_PRODUCTION else AdjustConfig.ENVIRONMENT_SANDBOX,
         )
         config.setOnAttributionChangedListener(this)
         if (deeplinkResponseListenerProxy != null) {
@@ -41,7 +47,7 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
             if (listener != null) {
                 config.setOnDeferredDeeplinkResponseListener { deeplink ->
                     listener.launchReceivedDeeplink(
-                        deeplink
+                        deeplink,
                     )
                 }
             }
@@ -52,7 +58,7 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
         }
         val fbAppId = getSettings()[FB_APP_ID_KEY]
         if (fbAppId != null) {
-            config.setFbAppId(fbAppId);
+            config.setFbAppId(fbAppId)
         }
         Adjust.initSdk(config)
         setAdidIntegrationAttribute()
@@ -69,9 +75,12 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
         val messageList: MutableList<ReportingMessage> = LinkedList()
         messageList.add(
             ReportingMessage(
-                this, ReportingMessage.MessageType.OPT_OUT, System.currentTimeMillis(), null
+                this,
+                ReportingMessage.MessageType.OPT_OUT,
+                System.currentTimeMillis(),
+                null,
             )
-                .setOptOut(optOutStatus)
+                .setOptOut(optOutStatus),
         )
         return messageList
     }
@@ -126,15 +135,13 @@ class AdjustKit : KitIntegration(), OnAttributionChangedListener, ActivityLifecy
 
         @JvmStatic
         @Throws(JSONException::class)
-        fun toJSON(attribution: AdjustAttribution): JSONObject {
-            return JSONObject()
-                .putOpt("tracker_token", attribution.trackerToken)
-                .putOpt("tracker_name", attribution.trackerName)
-                .putOpt("network", attribution.network)
-                .putOpt("campaign", attribution.campaign)
-                .putOpt("adgroup", attribution.adgroup)
-                .putOpt("creative", attribution.creative)
-                .putOpt("click_label", attribution.clickLabel)
-        }
+        fun toJSON(attribution: AdjustAttribution): JSONObject = JSONObject()
+            .putOpt("tracker_token", attribution.trackerToken)
+            .putOpt("tracker_name", attribution.trackerName)
+            .putOpt("network", attribution.network)
+            .putOpt("campaign", attribution.campaign)
+            .putOpt("adgroup", attribution.adgroup)
+            .putOpt("creative", attribution.creative)
+            .putOpt("click_label", attribution.clickLabel)
     }
 }
