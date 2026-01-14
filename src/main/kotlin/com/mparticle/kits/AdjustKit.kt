@@ -29,18 +29,21 @@ class AdjustKit :
     KitIntegration(),
     OnAttributionChangedListener,
     ActivityLifecycleCallbacks {
-
     override fun getInstance(): AdjustInstance = Adjust.getDefaultInstance()
 
     override fun getName(): String = KIT_NAME
 
-    override fun onKitCreate(settings: Map<String, String>, context: Context): List<ReportingMessage> {
+    override fun onKitCreate(
+        settings: Map<String, String>,
+        context: Context,
+    ): List<ReportingMessage> {
         val production = MParticle.Environment.Production == MParticle.getInstance()?.environment
-        val config = AdjustConfig(
-            getContext(),
-            getSettings()[APP_TOKEN],
-            if (production) AdjustConfig.ENVIRONMENT_PRODUCTION else AdjustConfig.ENVIRONMENT_SANDBOX,
-        )
+        val config =
+            AdjustConfig(
+                getContext(),
+                getSettings()[APP_TOKEN],
+                if (production) AdjustConfig.ENVIRONMENT_PRODUCTION else AdjustConfig.ENVIRONMENT_SANDBOX,
+            )
         config.setOnAttributionChangedListener(this)
         if (deeplinkResponseListenerProxy != null) {
             val listener = deeplinkResponseListenerProxy
@@ -93,19 +96,26 @@ class AdjustKit :
         try {
             jsonObject = toJSON(attribution)
         } catch (e: JSONException) {
-            val error = AttributionError()
-                .setMessage(e.message)
-                .setServiceProviderId(MParticle.ServiceProviders.ADJUST)
+            val error =
+                AttributionError()
+                    .setMessage(e.message)
+                    .setServiceProviderId(MParticle.ServiceProviders.ADJUST)
             kitManager.onError(error)
         }
-        val deepLinkResult = AttributionResult()
-            .setParameters(jsonObject)
-            .setServiceProviderId(MParticle.ServiceProviders.ADJUST)
+        val deepLinkResult =
+            AttributionResult()
+                .setParameters(jsonObject)
+                .setServiceProviderId(MParticle.ServiceProviders.ADJUST)
         kitManager.onResult(deepLinkResult)
     }
 
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+    override fun onActivityCreated(
+        activity: Activity,
+        savedInstanceState: Bundle?,
+    ) {}
+
     override fun onActivityStarted(activity: Activity) {}
+
     override fun onActivityResumed(activity: Activity) {
     }
 
@@ -113,8 +123,14 @@ class AdjustKit :
     }
 
     override fun onActivityStopped(activity: Activity) {}
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+
+    override fun onActivitySaveInstanceState(
+        activity: Activity,
+        outState: Bundle,
+    ) {}
+
     override fun onActivityDestroyed(activity: Activity) {}
+
     private fun setAdidIntegrationAttribute() {
         val integrationAttributes = integrationAttributes
         Adjust.getAdid { adid ->
@@ -135,13 +151,14 @@ class AdjustKit :
 
         @JvmStatic
         @Throws(JSONException::class)
-        fun toJSON(attribution: AdjustAttribution): JSONObject = JSONObject()
-            .putOpt("tracker_token", attribution.trackerToken)
-            .putOpt("tracker_name", attribution.trackerName)
-            .putOpt("network", attribution.network)
-            .putOpt("campaign", attribution.campaign)
-            .putOpt("adgroup", attribution.adgroup)
-            .putOpt("creative", attribution.creative)
-            .putOpt("click_label", attribution.clickLabel)
+        fun toJSON(attribution: AdjustAttribution): JSONObject =
+            JSONObject()
+                .putOpt("tracker_token", attribution.trackerToken)
+                .putOpt("tracker_name", attribution.trackerName)
+                .putOpt("network", attribution.network)
+                .putOpt("campaign", attribution.campaign)
+                .putOpt("adgroup", attribution.adgroup)
+                .putOpt("creative", attribution.creative)
+                .putOpt("click_label", attribution.clickLabel)
     }
 }
