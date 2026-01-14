@@ -33,10 +33,7 @@ class AdjustKit :
 
     override fun getName(): String = KIT_NAME
 
-    override fun onKitCreate(
-        settings: Map<String, String>,
-        context: Context,
-    ): List<ReportingMessage> {
+    override fun onKitCreate(settings: Map<String, String>, context: Context): List<ReportingMessage> {
         val production = MParticle.Environment.Production == MParticle.getInstance()?.environment
         val config =
             AdjustConfig(
@@ -82,8 +79,7 @@ class AdjustKit :
                 ReportingMessage.MessageType.OPT_OUT,
                 System.currentTimeMillis(),
                 null,
-            )
-                .setOptOut(optOutStatus),
+            ).setOptOut(optOutStatus),
         )
         return messageList
     }
@@ -109,10 +105,7 @@ class AdjustKit :
         kitManager.onResult(deepLinkResult)
     }
 
-    override fun onActivityCreated(
-        activity: Activity,
-        savedInstanceState: Bundle?,
-    ) {}
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
 
     override fun onActivityStarted(activity: Activity) {}
 
@@ -124,10 +117,7 @@ class AdjustKit :
 
     override fun onActivityStopped(activity: Activity) {}
 
-    override fun onActivitySaveInstanceState(
-        activity: Activity,
-        outState: Bundle,
-    ) {}
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
 
     override fun onActivityDestroyed(activity: Activity) {}
 
@@ -151,14 +141,13 @@ class AdjustKit :
 
         @JvmStatic
         @Throws(JSONException::class)
-        fun toJSON(attribution: AdjustAttribution): JSONObject =
-            JSONObject()
-                .putOpt("tracker_token", attribution.trackerToken)
-                .putOpt("tracker_name", attribution.trackerName)
-                .putOpt("network", attribution.network)
-                .putOpt("campaign", attribution.campaign)
-                .putOpt("adgroup", attribution.adgroup)
-                .putOpt("creative", attribution.creative)
-                .putOpt("click_label", attribution.clickLabel)
+        fun toJSON(attribution: AdjustAttribution): JSONObject = JSONObject()
+            .putOpt("tracker_token", attribution.trackerToken)
+            .putOpt("tracker_name", attribution.trackerName)
+            .putOpt("network", attribution.network)
+            .putOpt("campaign", attribution.campaign)
+            .putOpt("adgroup", attribution.adgroup)
+            .putOpt("creative", attribution.creative)
+            .putOpt("click_label", attribution.clickLabel)
     }
 }
