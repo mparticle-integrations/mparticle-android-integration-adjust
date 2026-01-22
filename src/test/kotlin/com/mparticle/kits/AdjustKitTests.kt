@@ -1,9 +1,7 @@
 package com.mparticle.kits
 
 import android.content.Context
-import com.adjust.sdk.AdjustAttribution
 import com.mparticle.MParticleOptions
-import com.mparticle.kits.AdjustKit.Companion.toJSON
 import org.json.JSONException
 import org.json.JSONObject
 import org.junit.Assert
@@ -12,7 +10,7 @@ import org.mockito.Mockito
 
 class AdjustKitTests {
     private val kit: KitIntegration
-         get() = AdjustKit()
+        get() = AdjustKit()
 
     @Test
     @Throws(Exception::class)
@@ -65,7 +63,7 @@ class AdjustKitTests {
 
     @get:Throws(JSONException::class)
     private val attributionJSON: JSONObject
-         get() {
+        get() {
             val jsonObject = JSONObject()
             jsonObject.putOpt("tracker_token", "a1")
             jsonObject.putOpt("tracker_name", "b2")
